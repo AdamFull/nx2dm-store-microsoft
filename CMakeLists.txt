@@ -28,7 +28,8 @@ endif ()
 nx_module(store_microsoft
         DISPLAY "Microsoft Store (Windows.Services.Store) storefront backend"
         SOURCES store_microsoft_module.cpp store_microsoft_platform.cpp
-                store_microsoft_services.cpp
+                store_microsoft_services.cpp store_microsoft_rate_review.cpp
+                store_microsoft_scripting.cpp
         DEPENDS nx_module_store
         PLATFORMS windows)
 

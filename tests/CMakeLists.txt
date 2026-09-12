@@ -3,9 +3,13 @@ add_executable(nx_store_microsoft_tests
         test_store_microsoft_module.cpp
         test_store_microsoft_platform.cpp
         test_store_microsoft_services.cpp
+        test_store_microsoft_rate_review.cpp
+        test_store_microsoft_scripting.cpp
         ../store_microsoft_module.cpp
         ../store_microsoft_platform.cpp
-        ../store_microsoft_services.cpp)
+        ../store_microsoft_services.cpp
+        ../store_microsoft_rate_review.cpp
+        ../store_microsoft_scripting.cpp)
 
 nx_module_registry(nx_store_microsoft_tests)
 

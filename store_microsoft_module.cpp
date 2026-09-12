@@ -1,4 +1,6 @@
 #include "store_microsoft/store_microsoft_platform.h"
+#include "store_microsoft/store_microsoft_rate_review.h"
+#include "store_microsoft/store_microsoft_scripting.h"
 #include "store_microsoft/store_microsoft_services.h"
 
 #include "store/store_service.h"
@@ -27,7 +29,8 @@ constexpr nxe::ModuleService PROVIDED_SERVICES[] = {
 
 class StoreMicrosoftModule final : public nxe::Module {
 public:
-  StoreMicrosoftModule() : m_core(m_platform), m_iap(m_platform) {}
+  StoreMicrosoftModule()
+      : m_core(m_platform), m_iap(m_platform), m_rate_review(m_platform) {}
 
   [[nodiscard]] nxe::ModuleDescriptor descriptor() const noexcept override {
     nxe::ModuleDescriptor out{};
@@ -62,12 +65,21 @@ public:
     return true;
   }
 
+  void on_expose_scripts(nxe::script::Host &host, nxe::ModuleContext &) override {
+    expose_store_microsoft_extras(host, m_rate_review);
+  }
+
   void on_detach(nxe::ModuleContext &) override { m_platform.shutdown(); }
 
 private:
   MicrosoftPlatform m_platform;
   MicrosoftCore m_core;
   MicrosoftIap m_iap;
+
+  // Microsoft-specific extra (rate-and-review prompt) - never part of
+  // store_service.h's neutral interface, never registered through
+  // ServiceRegistry (see store_microsoft_scripting.h).
+  MicrosoftRateReview m_rate_review;
 };
 
 } // namespace

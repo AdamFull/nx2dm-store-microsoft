@@ -1,0 +1,24 @@
+{
+  "services": [
+    {
+      "name": "store_microsoft_rate_review_request",
+      "signature": "()->(boolean)"
+    },
+    {
+      "name": "store_microsoft_rate_review_pending",
+      "signature": "()->(boolean)"
+    },
+    {
+      "name": "store_microsoft_rate_review_succeeded",
+      "signature": "()->(boolean)"
+    },
+    {
+      "name": "store_microsoft_rate_review_canceled_by_user",
+      "signature": "()->(boolean)"
+    },
+    {
+      "name": "store_microsoft_rate_review_was_updated",
+      "signature": "()->(boolean)"
+    }
+  ]
+}
