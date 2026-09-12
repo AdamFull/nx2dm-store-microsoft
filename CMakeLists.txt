@@ -5,8 +5,15 @@ if (NOT NX_MODULE_STORE_MICROSOFT)
     return()
 endif ()
 
+# nx_module()'s own PLATFORMS gate runs too late to help here - a project
+# that also builds for Android/iOS still passes
+# -DNX_MODULE_STORE_MICROSOFT=ON for this platform-irrelevant module (its
+# module list isn't per-platform), so this must skip itself before ever
+# reaching that gate, the same "skipped on <platform>" outcome
+# _nx_module_gate would otherwise report.
 if (NOT WIN32)
-    message(FATAL_ERROR "nx2d: store_microsoft only builds on Windows")
+    message(STATUS "nx2d: module 'store_microsoft' skipped on this platform")
+    return()
 endif ()
 
 # No vendor SDK to resolve here, unlike every other store backend - the
