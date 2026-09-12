@@ -118,7 +118,7 @@ bool MicrosoftIap::purchase(const nx::string_view product_id) {
   return true;
 }
 
-void MicrosoftIap::refresh_products() {
+void MicrosoftIap::refresh_products(const nx::vector<nx::string> &) {
   if (!m_platform.ready())
     return;
   const auto product_kinds = winrt::single_threaded_vector<winrt::hstring>(

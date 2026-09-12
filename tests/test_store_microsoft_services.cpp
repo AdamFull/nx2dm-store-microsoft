@@ -22,6 +22,8 @@ TEST_CASE("store_microsoft services: MicrosoftCore refuses safely with no "
   CHECK(core.store_name() == "microsoft");
   core.refresh_license();
   CHECK(core.owned_dlc_ids().empty());
+  core.refresh_ownership();
+  CHECK(core.owned_dlc_ids().empty());
 }
 
 TEST_CASE("store_microsoft services: MicrosoftIap refuses safely with no "

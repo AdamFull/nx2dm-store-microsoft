@@ -41,6 +41,12 @@ public:
   /// success instead.
   void refresh_license();
 
+  /// Windows.Services.Store always queries the full license (base game +
+  /// every add-on) in one call - @p dlc_id is ignored, same as
+  /// store::StoreCore::refresh_ownership() documents for any bulk-capable
+  /// backend.
+  void refresh_ownership(nx::string_view = {}) override { refresh_license(); }
+
 private:
   MicrosoftPlatform &m_platform;
   mutable std::mutex m_mutex;
@@ -63,8 +69,10 @@ public:
   /// "UnmanagedConsumable"), refreshing products(). Unlike Stove,
   /// purchase() doesn't need this cache's data to complete a purchase (the
   /// Store ID alone is enough for RequestPurchaseAsync()) - it only backs
-  /// the neutral listing.
-  void refresh_products();
+  /// the neutral listing. @p product_ids is ignored, same as
+  /// store::StoreIap::refresh_products() documents for any bulk-capable
+  /// backend.
+  void refresh_products(const nx::vector<nx::string> &product_ids = {}) override;
 
 private:
   MicrosoftPlatform &m_platform;
