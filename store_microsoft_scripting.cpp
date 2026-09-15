@@ -2,7 +2,7 @@
 
 #include "store_microsoft/store_microsoft_rate_review.h"
 
-#include "core/script/script_host.h"
+#include "script/script_host.h"
 
 namespace nxm::store_microsoft {
 
