@@ -1,4 +1,7 @@
 {
+  "platforms": [
+    "windows"
+  ],
   "services": [
     {
       "name": "store_microsoft_rate_review_request",
