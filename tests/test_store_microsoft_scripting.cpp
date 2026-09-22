@@ -1,6 +1,8 @@
 #include "framework/nxtest.h"
 
 #include "app/engine.h"
+#include "core/foundation/platform/filesystem.h"
+#include "script/luau/luau_bindings.h"
 #include "script/script_host.h"
 #include "store_microsoft/store_microsoft_platform.h"
 #include "store_microsoft/store_microsoft_rate_review.h"
@@ -21,45 +23,20 @@ struct Exposed {
     expose_store_microsoft_extras(host, rate_review);
     services = host.services();
   }
-
-  [[nodiscard]] const script::Host::ServiceInfo *
-  find(const nx::string_view name) const {
-    for (const script::Host::ServiceInfo &one : services)
-      if (one.name == name)
-        return &one;
-    return nullptr;
-  }
 };
 
 } // namespace
 
-// This is the one place a mismatch between what store_microsoft_scripting.cpp
-// actually registers and what modules/store_microsoft/script-services.json
-// declares to Luau would show up - see test_modio_scripting.cpp's identical
-// role for modio. No backend is registered in this harness (no real
-// Windows.Services.Store call runs), so every callable here just exercises
-// its own "no platform" refusal path.
-TEST_CASE("store_microsoft scripting: every service is exposed with the "
-          "shape a script is told about") {
+TEST_CASE("store_microsoft scripting: every service is exposed as script-services.json "
+          "declares it") {
   const Exposed exposed;
+  const auto manifest = nx::fs::file_read_text(
+      nx::fs::path_view(NX_MODULE_SERVICES_MANIFEST));
+  REQUIRE(manifest);
 
-  static constexpr struct {
-    nx::string_view name;
-    nx::string_view signature;
-  } WANT[] = {
-      {"store_microsoft_rate_review_request", "()->(boolean)"},
-      {"store_microsoft_rate_review_pending", "()->(boolean)"},
-      {"store_microsoft_rate_review_succeeded", "()->(boolean)"},
-      {"store_microsoft_rate_review_canceled_by_user", "()->(boolean)"},
-      {"store_microsoft_rate_review_was_updated", "()->(boolean)"},
-  };
-
-  CHECK(exposed.services.size() == nx::array_size(WANT));
-  for (const auto &want : WANT) {
-    const script::Host::ServiceInfo *const found = exposed.find(want.name);
-    REQUIRE(found != nullptr);
-    CHECK(found->signature == want.signature);
-  }
+  nx::string error;
+  if (!script::luau_manifest_agrees(manifest.value(), exposed.services, error))
+    FAIL(error.c_str());
 }
 
 TEST_CASE("store_microsoft scripting: the module hands them over on its "
